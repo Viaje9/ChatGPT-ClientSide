@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.screen-h {
+  height: 100vh;
+}
+
+.screen-w {
+  width: 100vw;
+}
+
+.min-h-5 {
+  min-width: 1rem;
+  height: 1rem;
+}
+
+/* @media  (max-width: 768px) {
+  .screen-h {
+    height: fill-available;
+  }
+
+  .screen-w {
+    width: fill-available;
+  }
+} */

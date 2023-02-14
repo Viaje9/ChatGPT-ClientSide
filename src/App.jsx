@@ -1,11 +1,18 @@
-import { useState, useRef, useMemo, useEffect } from "react";
+import { useState, useRef, useMemo, useEffect, useCallback } from "react";
 import axios from "axios";
+import './App.css'
+import img from './assets/A.png'
+
+// localStorage.clear()
 
 function App() {
   const [textInput, setTextInput] = useState("");
-  const [record, setRecord] = useState([]);
+  const [record, setRecord] = useState(
+    () => JSON.parse(localStorage.getItem("record")) || []
+  );
   const [loading, setLoading] = useState(false);
   const scrollRef = useRef(null);
+  const submitRef = useRef(null);
 
   useEffect(() => {
     const currentScrollRef = scrollRef.current;
@@ -13,30 +20,36 @@ function App() {
       top: currentScrollRef.scrollHeight - currentScrollRef.offsetHeight,
       behavior: "smooth",
     });
+
+    localStorage.setItem("record", JSON.stringify(record));
   }, [record]);
 
   const conversationRecord = (user, content) => ({ user, content });
 
-  async function onSubmit(event) {
-    if(!textInput) {
-      return
-    }
-    setTextInput("");
-    const dialog = conversationRecord("Human", textInput);
-    const newRecord = [...record, dialog];
-    setRecord(newRecord);
+  const translateBtnEvent = (lang) =>
+    useCallback(() => {
+      if (!textInput) {
+        return;
+      }
+      setTextInput("");
+      const dialog = conversationRecord("Human", `"${textInput}"${lang}的意思`);
+      const newRecord = [...record, dialog];
+      setRecord(newRecord);
+      callOpenAi(newRecord);
+    });
 
+  function callOpenAi(record) {
     setLoading(true);
-    await axios
+    axios
       .post("http://192.168.0.170:8000/openapi", {
-        record: newRecord,
+        record,
       })
       .then(({ data }) => {
         if (data.success) {
           const dialogList = data.record.choices.map((result) =>
             conversationRecord("AI", result.text)
           );
-          setRecord([...newRecord, ...dialogList]);
+          setRecord([...record, ...dialogList]);
         }
       })
       .catch((error) => console.log(error))
@@ -45,29 +58,87 @@ function App() {
       });
   }
 
+  function onSubmit(event) {
+    if (!textInput) {
+      return;
+    }
+    submitRef.current.focus()
+    setTextInput("");
+    const dialog = conversationRecord("Human", textInput);
+    const newRecord = [...record, dialog];
+    setRecord(newRecord);
+    callOpenAi(newRecord);
+  }
+
   return (
     <div className="App">
       <div className="flex flex-col items-center justify-center screen-w  screen-h overflow-y-hidden bg-gray-100 text-gray-800">
-        <div className="flex flex-col flex-grow w-full max-w-xl bg-white shadow-xl rounded-lg overflow-hidden">
-          <div ref={scrollRef} className="flex flex-col flex-grow h-0 p-4 overflow-auto">
+        <div className="main-container">
+          <div className="header-area">
+            {button("翻譯中文", translateBtnEvent("中文"))}
+            {button("翻譯英文", translateBtnEvent("英文"))}
+            <button
+              onClick={() => {
+                axios
+                  .get("http://192.168.0.170:8000/heart")
+                  .then(() => {})
+                  .catch((error) => {
+                    alert("not working");
+                  });
+              }}
+              type="button"
+              className="top-btn"
+            >
+              連線
+            </button>
+          </div>
+         
+          <div
+            ref={scrollRef}
+            className="view-container"
+          >
             {useMemo(() => record.map(content))}
             {loadingComponent(loading)}
           </div>
 
-          <div className="bg-gray-300 p-4 flex">
-            <form className="w-full flex" onSubmit={(e) => e.preventDefault()}>
+          <div className="input-bar">
+            <form
+              className="w-full flex"
+              onSubmit={(e) => {
+                e.preventDefault();
+              }}
+            >
               <input
-                className="flex items-center h-10 w-full rounded px-3 text-sm"
+                className="flex outline-color items-center h-9 w-full rounded-3xl px-3 text-base bg-dark-gray text-white"
                 type="text"
                 value={textInput}
                 onChange={(e) => setTextInput(e.target.value)}
               />
-              <input name="submit" className="w-20" type="submit" onClick={onSubmit} />
+              <input
+                ref={submitRef}
+                disabled={loading}
+                name="submit"
+                className="w-20 text-white"
+                type="submit"
+                onClick={onSubmit}
+              />
             </form>
           </div>
         </div>
       </div>
     </div>
+  );
+}
+
+function button(title, callback) {
+  return (
+    <button
+      onClick={callback}
+      type="button"
+      className="top-btn"
+    >
+      {title}
+    </button>
   );
 }
 
@@ -77,9 +148,9 @@ function content(params, index) {
       {params.user !== "AI" ? (
         <div className="flex w-full mt-2 space-x-3 max-w-xs ml-auto justify-end">
           <div>
-            <div className="bg-blue-600 text-white p-3 rounded-l-lg rounded-br-lg">
+            <div className="input-content bg-bright-green rounded-l-3xl rounded-br-3xl">
               <p
-                className="text-sm"
+                className="text-base"
                 dangerouslySetInnerHTML={{ __html: params.content }}
               ></p>
             </div>
@@ -89,9 +160,9 @@ function content(params, index) {
       ) : (
         <div className="flex w-full mt-2 space-x-3 max-w-xs">
           <div>
-            <div className="bg-gray-300 p-3 rounded-r-lg rounded-bl-lg">
+            <div className="input-content bg-dark-gray rounded-r-3xl rounded-bl-3xl">
               <p
-                className="text-sm"
+                className="text-base"
                 dangerouslySetInnerHTML={{ __html: params.content }}
               ></p>
             </div>

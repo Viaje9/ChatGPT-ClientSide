@@ -29,9 +29,11 @@ jobs:
       - name: Install & Build # 執行指令
         env: 
           PUBLIC_URL: ${{ secrets.PUBLIC_URL }}
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
         run: |
           touch .env
           echo PUBLIC_URL=${{ secrets.PUBLIC_URL }} >> .env
+          echo VITE_API_URL=${{ secrets.VITE_API_URL }} >> .env
           npm install
           npm run build 
           

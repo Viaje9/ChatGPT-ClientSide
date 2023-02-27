@@ -1,15 +1,17 @@
 import { useState, useRef, useMemo, useEffect, useCallback } from "react";
-import axios from "axios";
-import './Chat.css'
-
-const PORT = 3000
+import "./Chat.css";
+import request from "/src/core/api";
+import Loading from "./Loading/Loading";
+import ErrorContent from "./ErrorContent/ErrorContent";
+import Content from "./Content/Content";
 // localStorage.clear()
-function App() {
+function Chat() {
   const [textInput, setTextInput] = useState("");
   const [record, setRecord] = useState(
     () => JSON.parse(localStorage.getItem("record")) || []
   );
   const [loading, setLoading] = useState(false);
+  const [apiError, setApiError] = useState(false);
   const scrollRef = useRef(null);
   const submitRef = useRef(null);
 
@@ -38,12 +40,10 @@ function App() {
     });
 
   function callOpenAi(record) {
+    setApiError(false);
     setLoading(true);
-    axios
-    // .post(`https://chat-gtp-server-side.vercel.app/openapi`, {
-    //     record,
-    //   })
-      .post(`http://${ window.location.hostname}:${PORT}/openapi`, {
+    request
+      .post(`/openapi`, {
         record,
       })
       .then(({ data }) => {
@@ -53,8 +53,15 @@ function App() {
           );
           setRecord([...record, ...dialogList]);
         }
+
+        if (!data.success) {
+          setApiError(true);
+        }
       })
-      .catch((error) => console.log(error))
+      .catch((error) => {
+        setApiError(true);
+        console.log(error);
+      })
       .finally(() => {
         setLoading(false);
       });
@@ -64,7 +71,7 @@ function App() {
     if (!textInput) {
       return;
     }
-    submitRef.current.focus()
+    submitRef.current.focus();
     setTextInput("");
     const dialog = conversationRecord("Human", textInput);
     const newRecord = [...record, dialog];
@@ -74,19 +81,18 @@ function App() {
 
   return (
     <div className="App">
-      <div className="flex flex-col items-center justify-center screen-w  screen-h overflow-y-hidden bg-gray-100 text-gray-800">
+      <div className="flex flex-col items-center justify-center w-full screen-h overflow-y-hidden bg-gray-100 text-gray-800">
         <div className="main-container">
           <div className="header-area">
             {button("翻譯中文", translateBtnEvent("中文"))}
             {button("翻譯英文", translateBtnEvent("英文"))}
-            {/* <button
+            <button
               onClick={() => {
-                axios
-                .get(`https://chat-gtp-server-side.vercel.app/test`)
-
-                  // .get(`http://${ window.location.hostname}:${PORT}/test`)
+                request
+                  .get(`/test`)
                   .then(() => {})
                   .catch((error) => {
+                    console.log(error);
                     alert("not working");
                   });
               }}
@@ -94,15 +100,13 @@ function App() {
               className="top-btn"
             >
               連線
-            </button> */}
+            </button>
           </div>
-         
-          <div
-            ref={scrollRef}
-            className="view-container"
-          >
-            {useMemo(() => record.map(content))}
-            {loadingComponent(loading)}
+
+          <div ref={scrollRef} className="view-container">
+            {useMemo(() => record.map(Content))}
+            {ErrorContent(apiError, () => callOpenAi(record))}
+            {Loading(loading)}
           </div>
 
           <div className="input-bar">
@@ -136,90 +140,12 @@ function App() {
 
 function button(title, callback) {
   return (
-    <button
-      onClick={callback}
-      type="button"
-      className="top-btn"
-    >
+    <button onClick={callback} type="button" className="top-btn">
       {title}
     </button>
   );
 }
 
-function content(params, index) {
-  return (
-    <div key={index}>
-      {params.user !== "AI" ? (
-        <div className="flex w-full mt-2 space-x-3 max-w-xs ml-auto justify-end">
-          <div>
-            <div className="input-content bg-bright-green rounded-l-3xl rounded-br-3xl">
-              <p
-                className="text-base"
-                dangerouslySetInnerHTML={{ __html: params.content }}
-              ></p>
-            </div>
-            {/* <span className="text-xs text-gray-500 leading-none">2 min ago</span> */}
-          </div>
-        </div>
-      ) : (
-        <div className="flex w-full mt-2 space-x-3 max-w-xs">
-          <div>
-            <div className="input-content bg-dark-gray rounded-r-3xl rounded-bl-3xl">
-              <p
-                className="text-base"
-                dangerouslySetInnerHTML={{ __html: params.content }}
-              ></p>
-            </div>
-            {/* <span className="text-xs text-gray-500 leading-none">2 min ago</span> */}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
 
-function loadingComponent(state) {
-  const [dot, setDot] = useState(".");
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      if (dot.length === 0) {
-        setDot("•");
-      }
-
-      if (dot.length === 1) {
-        setDot("• •");
-      }
-
-      if (dot.length === 3) {
-        setDot("• • •");
-      }
-
-      if (dot.length === 5) {
-        setDot("");
-      }
-    }, 300);
-
-    return () => {
-      clearInterval(timer);
-    };
-  }, [dot]);
-
-  if (state) {
-    return (
-      <div className="flex w-full mt-2 space-x-3 max-w-xs">
-        {/* <div className="flex-shrink-0 h-10 w-10 rounded-full bg-gray-300"></div> */}
-        <div>
-          <div className="bg-dark-gray p-3 rounded-r-lg rounded-bl-lg">
-            <p className="text-sm min-h-5 text-white">{dot}</p>
-          </div>
-          {/* <span className="text-xs text-gray-500 leading-none">2 min ago</span> */}
-        </div>
-      </div>
-    );
-  }
-
-  return <></>;
-}
-
-export default App;
+export default Chat;

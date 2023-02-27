@@ -1,13 +1,17 @@
+.App {
+  @apply w-full
+}
+
 .top-btn {
   @apply bg-bright-green text-white font-bold py-2 px-4 mr-2 rounded
 }
 
 .header-area {
-  @apply fixed w-full max-w-xl px-2 py-1 bg-black
+  @apply fixed w-full px-2 py-1 bg-black
 }
 
 .view-container {
-  @apply flex flex-col flex-grow h-0 p-4 mt-10 overflow-auto
+  @apply flex flex-col w-full flex-grow h-0 p-4 mt-10 overflow-auto
 }
 
 .input-bar {
@@ -17,7 +21,7 @@
 }
 
 .main-container {
-  @apply flex flex-col flex-grow w-full  max-w-xl bg-black shadow-xl overflow-hidden
+  @apply flex flex-col flex-grow w-full bg-black shadow-xl overflow-hidden
 }
 
 .bg-bright-green {

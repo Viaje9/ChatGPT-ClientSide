@@ -1,9 +1,10 @@
 import Router from "./router";
-
+import SideMenu from './Layout/SideMenu/SideMenu'
 
 function App() {
   return (
-    <div>
+    <div className="flex">
+      <SideMenu></SideMenu>
       <Router></Router>
     </div>
   );

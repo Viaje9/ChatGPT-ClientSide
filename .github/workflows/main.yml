@@ -27,6 +27,8 @@ jobs:
       - uses: actions/checkout@v2
       
       - name: Install & Build # 執行指令
+        env: 
+          PUBLIC_URL: ${{ variables.PUBLIC_URL }}
         run: |
           npm install
           npm run build 

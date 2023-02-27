@@ -7,8 +7,8 @@ export default ({mode}) => {
   if (mode === "production") {
     base = loadEnv(mode, process.cwd()).VITE_PUBLIC_URL 
   }
-  
-  console.log('Current base url:', base,'----------------');
+
+  console.log('Current base url:', loadEnv(mode, process.cwd()),'----------------');
 
   return defineConfig({
     server: {

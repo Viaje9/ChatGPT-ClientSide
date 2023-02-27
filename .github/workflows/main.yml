@@ -28,7 +28,7 @@ jobs:
       
       - name: Install & Build # 執行指令
         env: 
-          PUBLIC_URL: ${{ variables.PUBLIC_URL }}
+          PUBLIC_URL: $PUBLIC_URL
         run: |
           npm install
           npm run build 

@@ -27,9 +27,9 @@ jobs:
       - uses: actions/checkout@v2
       
       - name: Install & Build # 執行指令
-        env: 
-          PUBLIC_URL: ${{ env.PUBLIC_URL }}
         run: |
+          touch .env
+          echo PUBLIC_URL=${{ env.PUBLIC_URL }} >> .env
           npm install
           npm run build 
           

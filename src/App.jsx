@@ -76,10 +76,10 @@ function App() {
     <div className="App">
       <div className="flex flex-col items-center justify-center screen-w  screen-h overflow-y-hidden bg-gray-100 text-gray-800">
         <div className="main-container">
-          {/* <div className="header-area">
+          <div className="header-area">
             {button("翻譯中文", translateBtnEvent("中文"))}
             {button("翻譯英文", translateBtnEvent("英文"))}
-            <button
+            {/* <button
               onClick={() => {
                 axios
                 .get(`https://chat-gtp-server-side.vercel.app/test`)
@@ -94,8 +94,8 @@ function App() {
               className="top-btn"
             >
               連線
-            </button>
-          </div> */}
+            </button> */}
+          </div>
          
           <div
             ref={scrollRef}

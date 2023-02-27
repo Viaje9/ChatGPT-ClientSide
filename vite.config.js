@@ -10,7 +10,7 @@ export default ({mode}) => {
     base = process.env.PUBLIC_URL 
   }
 
-  console.log('Current base url:', process.env,'----------------');
+  console.log('Current base url:', process.env.base,'----------------');
 
   return defineConfig({
     server: {

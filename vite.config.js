@@ -7,10 +7,10 @@ export default ({mode}) => {
   console.log('Current environment:', mode,'----------------');
   let base = "/";
   if (mode === "production") {
-    base = process.env.VITE_PUBLIC_URL 
+    base = process.env.PUBLIC_URL 
   }
 
-  console.log('Current base url:', process.env.base,'----------------');
+  console.log('Current base url:', process.env,'----------------');
 
   return defineConfig({
     server: {

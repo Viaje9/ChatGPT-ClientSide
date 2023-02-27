@@ -1,14 +1,16 @@
-import { defineConfig, loadEnv } from "vite";
+import { defineConfig } from "vite";
+import * as dotenv from "dotenv";
 import react from "@vitejs/plugin-react";
+dotenv.config();
 
 export default ({mode}) => {
   console.log('Current environment:', mode,'----------------');
   let base = "/";
   if (mode === "production") {
-    base = loadEnv(mode, process.cwd()).VITE_PUBLIC_URL 
+    base = process.env.VITE_PUBLIC_URL 
   }
 
-  console.log('Current base url:', loadEnv(mode, process.cwd()),'----------------');
+  console.log('Current base url:', process.env.base,'----------------');
 
   return defineConfig({
     server: {

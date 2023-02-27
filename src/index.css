@@ -11,11 +11,11 @@
 
 @media (max-width: 768px) {
   .screen-h {
-    height: fill-available;
+    height: stretch;
   }
 
   .screen-w {
-    width: fill-available;
+    width: stretch;
   }
 }
 

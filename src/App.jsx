@@ -1,10 +1,9 @@
 import { useState, useRef, useMemo, useEffect, useCallback } from "react";
 import axios from "axios";
 import './App.css'
-import img from './assets/A.png'
 
+const PORT = 8000
 // localStorage.clear()
-
 function App() {
   const [textInput, setTextInput] = useState("");
   const [record, setRecord] = useState(
@@ -41,9 +40,12 @@ function App() {
   function callOpenAi(record) {
     setLoading(true);
     axios
-      .post("http://192.168.0.170:8000/openapi", {
+    .post(`https://chat-gtp-server-side.vercel.app/openapi`, {
         record,
       })
+      // .post(`http://${ window.location.hostname}:${PORT}/openapi`, {
+      //   record,
+      // })
       .then(({ data }) => {
         if (data.success) {
           const dialogList = data.record.choices.map((result) =>
@@ -74,13 +76,15 @@ function App() {
     <div className="App">
       <div className="flex flex-col items-center justify-center screen-w  screen-h overflow-y-hidden bg-gray-100 text-gray-800">
         <div className="main-container">
-          <div className="header-area">
+          {/* <div className="header-area">
             {button("翻譯中文", translateBtnEvent("中文"))}
             {button("翻譯英文", translateBtnEvent("英文"))}
             <button
               onClick={() => {
                 axios
-                  .get("http://192.168.0.170:8000/heart")
+                .get(`https://chat-gtp-server-side.vercel.app/test`)
+
+                  // .get(`http://${ window.location.hostname}:${PORT}/test`)
                   .then(() => {})
                   .catch((error) => {
                     alert("not working");
@@ -91,7 +95,7 @@ function App() {
             >
               連線
             </button>
-          </div>
+          </div> */}
          
           <div
             ref={scrollRef}

@@ -4,13 +4,10 @@ import react from "@vitejs/plugin-react";
 dotenv.config();
 
 export default ({mode}) => {
-  console.log('Current environment:', mode,'----------------');
   let base = "/";
   if (mode === "production") {
     base = process.env.PUBLIC_URL 
   }
-
-  console.log('Current base url:', process.env.base,'----------------');
 
   return defineConfig({
     server: {

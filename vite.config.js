@@ -6,7 +6,7 @@ dotenv.config();
 export default ({mode}) => {
   let base = "/";
   if (mode === "production") {
-    base = process.env.PUBLIC_URL 
+    base = process.env.VITE_PUBLIC_URL 
   }
 
   return defineConfig({

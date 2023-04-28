@@ -1,7 +1,7 @@
 function Content(params, index) {
   return (
     <div key={index}>
-      {params.user !== "AI" ? (
+      {params.user !== "assistant" ? (
         <div className="flex w-full mt-2 space-x-3 max-w-xs ml-auto justify-end">
           <div>
             <div className="input-content bg-bright-green rounded-l-3xl rounded-br-3xl">

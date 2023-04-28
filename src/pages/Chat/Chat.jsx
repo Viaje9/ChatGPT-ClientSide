@@ -47,7 +47,7 @@ function Chat() {
         return;
       }
       setTextInput("");
-      const dialog = conversationRecord("Human", `"${textInput}"${lang}的意思`);
+      const dialog = conversationRecord("user", `"${textInput}"${lang}的意思`);
       const newRecord = [...record, dialog];
       setRecord(newRecord);
       callOpenAi(newRecord);
@@ -63,7 +63,7 @@ function Chat() {
       .then(({ data }) => {
         if (data.success) {
           const dialogList = data.record.choices.map((result) =>
-            conversationRecord("AI", result.text)
+          conversationRecord("assistant", result.message.content)
           );
           setRecord([...record, ...dialogList]);
         }
@@ -87,7 +87,7 @@ function Chat() {
     }
     submitRef.current.focus();
     setTextInput("");
-    const dialog = conversationRecord("Human", textInput);
+    const dialog = conversationRecord("user", textInput);
     const newRecord = [...record, dialog];
     setRecord(newRecord);
     callOpenAi(newRecord);

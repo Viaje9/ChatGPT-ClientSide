@@ -24,11 +24,11 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
-          node-version: 14
+          node-version: 16
       - name: Install & Build # 執行指令
         env: 
           VITE_PUBLIC_URL: ${{ secrets.VITE_PUBLIC_URL }}
@@ -40,10 +40,9 @@ jobs:
           npm install
           npm run build 
           
-      # Runs a single command using the runners shell
-      - name: Deploy
-        uses: JamesIves/github-pages-deploy-action@releases/v4
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          BRANCH: gh-pages # deploy 到 gh-pages 這個分支
-          FOLDER: dist # build 後的資料夾
-          TOKEN: ${{ secrets.token }}
+          branch: gh-pages
+          github_token: ${{ secrets.token }}
+          publish_dir: dist

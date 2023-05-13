@@ -23,6 +23,6 @@
   },
   // "include": ["src"],
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.ts"],
-  "exclude": ["vite.config.js"],
+  "exclude": ["vite.config.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

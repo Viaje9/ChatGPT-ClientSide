@@ -5,12 +5,14 @@ import ErrorContent from "./ErrorContent/ErrorContent";
 import Content from "./Content/Content";
 import menu from "/src/assets/images/menu.svg";
 
-import { useChatContext } from "./ChatContext/Chat.context";
-import { addMessage, removeRecord, setCurrentText } from "./ChatContext/Chat.action";
 import { ChatUser } from "../../enum/chat-user.enum";
-import { RecordInfo } from "./ChatContext/Chat.model";
 import { ApiService } from "@/core/api/api.service";
 import { isSuccess } from "@/core/utils/api-helper";
+import { isHandset } from "@/core/utils/utils";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/core/store";
+import { addMessage, removeRecord, setCurrentText } from "@/core/store/chat/action";
+import { RecordInfo } from "@/core/store/chat/model";
 
 export const conversationRecord = (user: ChatUser, content: string): RecordInfo => ({
   user,
@@ -18,7 +20,8 @@ export const conversationRecord = (user: ChatUser, content: string): RecordInfo 
 });
 
 function ChatContainer() {
-  const { state, getState, dispatch } = useChatContext();
+  const dispatch = useDispatch()
+  const state = useSelector((state: RootState) => state.chat)
   const [loading, setLoading] = useState(false);
   const [apiError, setApiError] = useState(false);
   const [showTool, setShowTool] = useState(false);
@@ -91,7 +94,6 @@ function ChatContainer() {
     }
     const dialog = conversationRecord(ChatUser.USER, state.userCurrentInputText);
     dispatch(addMessage(dialog))
-    console.log(getState());
 
     dispatch(setCurrentText(""));
     // console.log(state.record);
@@ -102,7 +104,7 @@ function ChatContainer() {
   return (
     <div className="App">
       <div className="flex flex-col items-center justify-center w-full screen-h overflow-y-hidden bg-gray-100 text-gray-800">
-        <div className="main-container">
+        <div className={isHandset() ? 'main-container':'main-container h-screen'}>
           <div className="header-area"></div>
 
           <div ref={scrollRef} className="view-container">

@@ -1,6 +1,6 @@
 import refresh from "/src/assets/images/refresh.svg";
 
-function ErrorContent(errorState, resend) {
+function ErrorContent(errorState:boolean, resend:()=>void) {
   if (errorState) {
     return (
       <div>

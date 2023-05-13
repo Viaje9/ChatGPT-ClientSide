@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-function Loading(state) {
+function Loading(state: boolean) {
   const [dot, setDot] = useState(".");
 
   useEffect(() => {

@@ -1,4 +1,6 @@
-function Content(params, index) {
+import { RecordInfo } from "@/core/store/chat/model";
+
+function Content(params: RecordInfo, index: number) {
   return (
     <div key={index}>
       {params.user !== "AI" ? (

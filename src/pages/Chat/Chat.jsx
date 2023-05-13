@@ -5,6 +5,7 @@ import Loading from "./Loading/Loading";
 import ErrorContent from "./ErrorContent/ErrorContent";
 import Content from "./Content/Content";
 import menu from "/src/assets/images/menu.svg";
+import { encode } from "/src/utils/gpt-token-count";
 
 // localStorage.clear()
 function Chat() {
@@ -54,6 +55,10 @@ function Chat() {
     });
 
   function callOpenAi(record) {
+    const str = record.map(e => e.content).reduce((acc, cur) => `${acc} ${cur}`, "");
+    const encoded = encode(str)
+    console.log(encoded);
+    console.log(encoded.length);
     setApiError(false);
     setLoading(true);
     request

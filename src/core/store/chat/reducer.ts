@@ -23,14 +23,13 @@ export const ChatReducer = createReducer(initialState, (builder) => {
         record: newRecord,
       };
     })
-    .addCase(setCurrentText, (state, action) => {
-      const { text } = action.payload;
+    .addCase(setCurrentText, (state, action) => {      
       return {
         ...state,
-        userCurrentInputText: text,
+        userCurrentInputText: action.payload,
       };
     })
-    .addCase(removeRecord, (state, action) => {
+    .addCase(removeRecord, (state) => {
       localStorage.setItem("record", JSON.stringify([]));
       return { ...state, record: [] };
     })

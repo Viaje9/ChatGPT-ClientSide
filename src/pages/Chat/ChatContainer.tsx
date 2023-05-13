@@ -9,7 +9,7 @@ import { ChatUser } from "../../enum/chat-user.enum";
 import { ApiService } from "@/core/api/api.service";
 import { isSuccess } from "@/core/utils/api-helper";
 import { isHandset } from "@/core/utils/utils";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector, useStore } from "react-redux";
 import { RootState } from "@/core/store";
 import { addMessage, removeRecord, setCurrentText } from "@/core/store/chat/action";
 import { RecordInfo } from "@/core/store/chat/model";
@@ -21,6 +21,7 @@ export const conversationRecord = (user: ChatUser, content: string): RecordInfo 
 
 function ChatContainer() {
   const dispatch = useDispatch()
+  const store = useStore<RootState>()
   const state = useSelector((state: RootState) => state.chat)
   const [loading, setLoading] = useState(false);
   const [apiError, setApiError] = useState(false);
@@ -85,26 +86,27 @@ function ChatContainer() {
   }
 
   function onSubmit() {
+    console.log('test', state.userCurrentInputText);
+
     if (!state.userCurrentInputText) {
       return;
     }
 
-    if (submitRef && submitRef.current) {
-      submitRef.current.focus();
-    }
+    // if (submitRef && submitRef.current) {
+    //   submitRef.current.focus();
+    // }
     const dialog = conversationRecord(ChatUser.USER, state.userCurrentInputText);
     dispatch(addMessage(dialog))
-
+    const data = store.getState().chat.record
     dispatch(setCurrentText(""));
-    // console.log(state.record);
 
-    callOpenAi(state.record)
+    callOpenAi(data)
   }
 
   return (
     <div className="App">
       <div className="flex flex-col items-center justify-center w-full screen-h overflow-y-hidden bg-gray-100 text-gray-800">
-        <div className={isHandset() ? 'main-container':'main-container h-screen'}>
+        <div className={isHandset() ? 'main-container' : 'main-container h-screen'}>
           <div className="header-area"></div>
 
           <div ref={scrollRef} className="view-container">
